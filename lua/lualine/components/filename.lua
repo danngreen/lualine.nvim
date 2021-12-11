@@ -7,6 +7,8 @@ local default_options = {
   file_status = true,
   path = 0,
   shorting_target = 40,
+  max_filename_length = 40,
+  narrow_window_size = 84,
 }
 
 ---counts how many times pattern occur in base ( used for counting path-sep )
@@ -54,8 +56,10 @@ M.update_status = function(self)
 
     local path_separator = package.config:sub(1, 1)
     for _ = 0, count(data, path_separator) do
-      if windwidth <= 84 or #data > estimated_space_available then
-        data = shorten_path(data, path_separator)
+      if windwidth <= self.options.narrow_window_size
+	    or #data > self.options.max_filename_length
+	    or #data > estimated_space_available then
+            data = shorten_path(data, path_separator)
       end
     end
   end
